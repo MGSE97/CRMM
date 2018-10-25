@@ -1,7 +1,65 @@
-﻿@{
+﻿@using Data.Mapping
+@using Microsoft.AspNetCore.Razor.Language.Intermediate
+@{
     ViewData["Title"] = "About";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+@*<h2>@ViewData["Title"]</h2>
+    <h3>@ViewData["Message"]</h3>*@
 
-<p>Use this area to provide additional information.</p>
+<p>Model binder test.</p>
+
+
+@{
+    var values = new Dictionary<string, object>
+    {
+        {"a", "1" },
+        {"b", 2 }
+    };
+
+    var obj = new TestModel();
+    var obj2 = new TestModel("2", 4);
+}
+
+<h3>New</h3>
+@foreach (var property in obj.GetType().GetProperties())
+{
+    <text>
+        <b>@property.Name</b> = @property.GetValue(obj) <br />
+    </text>
+}
+
+@{
+    ModelMapper.Map(values, obj);
+}
+
+<h3>Dictionary bind</h3>
+@foreach (var property in obj.GetType().GetProperties())
+{
+    <text>
+        <b>@property.Name</b> = @property.GetValue(obj) <br />
+    </text>
+}
+
+@{
+    ModelMapper.Map(obj2, obj, AccessProtection.Widows);
+}
+
+<h3>Object bind public</h3>
+@foreach (var property in obj.GetType().GetProperties())
+{
+    <text>
+        <b>@property.Name</b> = @property.GetValue(obj) <br />
+    </text>
+}
+
+@{
+    ModelMapper.Map(obj2, obj, AccessProtection.Sasuke);
+}
+
+<h3>Object bind private</h3>
+@foreach (var property in obj.GetType().GetProperties())
+{
+    <text>
+        <b>@property.Name</b> = @property.GetValue(obj) <br />
+    </text>
+}

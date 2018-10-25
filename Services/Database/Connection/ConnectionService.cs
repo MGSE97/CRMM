@@ -14,7 +14,7 @@ namespace Services.Database.Connection
             _connector = connector;
         }
 
-        public SqlDataReader Execute(string sql, Dictionary<string, SqlDbType> @params)
+        public SqlDataReader Execute(string sql, Dictionary<string, SqlDbType> @params = null)
         {
             return _connector.Execute(sql, @params);
         }

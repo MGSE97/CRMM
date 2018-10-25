@@ -21,7 +21,7 @@ namespace Database
             Connection?.Dispose();
         }
 
-        public SqlDataReader Execute(string command, Dictionary<string, SqlDbType> @params)
+        public SqlDataReader Execute(string command, Dictionary<string, SqlDbType> @params = null)
         {
             if(Connection.State == ConnectionState.Closed)
                 Connection.Open();
@@ -29,10 +29,11 @@ namespace Database
 
             using (var cmd = new SqlCommand(command, Connection))
             {
-                foreach (var param in @params)
-                {
-                    cmd.Parameters.Add(param.Key, param.Value);
-                }
+                if(@params != null)
+                    foreach (var param in @params)
+                    {
+                        cmd.Parameters.Add(param.Key, param.Value);
+                    }
                 reader = cmd.ExecuteReader();
             }
 

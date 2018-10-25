@@ -6,6 +6,6 @@ namespace Services.Database.Connection
 {
     public interface IConnectionService
     {
-        SqlDataReader Execute(string sql, Dictionary<string, SqlDbType> @params);
+        SqlDataReader Execute(string sql, Dictionary<string, SqlDbType> @params = null);
     }
 }
