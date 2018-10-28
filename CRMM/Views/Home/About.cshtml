@@ -1,5 +1,7 @@
 ﻿@using Data.Mapping
+@using Database
 @using Microsoft.AspNetCore.Razor.Language.Intermediate
+@using Microsoft.EntityFrameworkCore.Internal
 @{
     ViewData["Title"] = "About";
 }
@@ -29,6 +31,7 @@
 }
 
 @{
+    obj.HistoryList.Add("Dictionary");
     ModelMapper.Map(values, obj);
 }
 
@@ -41,6 +44,7 @@
 }
 
 @{
+    obj.HistoryList.Add("Public");
     ModelMapper.Map(obj2, obj, AccessProtection.Widows);
 }
 
@@ -53,6 +57,7 @@
 }
 
 @{
+    obj.HistoryList.Add("Private");
     ModelMapper.Map(obj2, obj, AccessProtection.Sasuke);
 }
 
@@ -62,4 +67,42 @@
     <text>
         <b>@property.Name</b> = @property.GetValue(obj) <br />
     </text>
+}
+
+<h3>DB Select</h3>
+@{
+    var context = new DBContext("35.196.199.23", "crmm", "crmm*", "crmm");
+    var connector = new MySqlConnector(context);
+    var results = connector.Execute("SELECT * FROM Test").MapAll<TestModel>().ToList();
+}
+
+@foreach (var result in results)
+{
+    <b>@results.IndexOf(result)</b><br />
+    foreach (var property in result.GetType().GetProperties())
+    {
+        <text>
+            <b>@property.Name</b> = @property.GetValue(result) <br />
+        </text>
+    }
+}
+
+<h3>DB Select Update</h3>
+@{
+    obj.HistoryList.Add("Dictionary");
+    ModelMapper.Map(values, obj, AccessProtection.Sasuke);
+    obj.HistoryList.Add("DB");
+    obj2.HistoryList.Add("DB");
+    results = connector.Execute("SELECT * FROM Test").MapAll(new[] { obj, obj2 }).ToList();
+}
+
+@foreach (var result in results)
+{
+    <b>@results.IndexOf(result)</b><br />
+    foreach (var property in result.GetType().GetProperties())
+    {
+        <text>
+            <b>@property.Name</b> = @property.GetValue(result) <br />
+        </text>
+    }
 }

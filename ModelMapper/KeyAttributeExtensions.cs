@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
 using System.Linq;
 using System.Reflection;
 
@@ -8,10 +8,10 @@ namespace Data.Mapping
     {
         public static PropertyInfo[] GetKeys(this PropertyInfo[] propertyInfos)
         {
-            return propertyInfos.Where(p => CustomAttributeExtensions.GetCustomAttribute<KeyAttribute>((MemberInfo) p) != null).ToArray();
+            return propertyInfos.Where(p => p.GetCustomAttributes<KeyAttribute>()?.Any()??false).ToArray();
         }
 
-        public static bool CompareKeys<T>(this T obj, SqlDataReader reader)
+        public static bool CompareKeys<T>(this T obj, IDataReader reader)
         {
             var keys = obj.GetType().GetProperties().GetKeys();
             int success = 0;
@@ -19,10 +19,14 @@ namespace Data.Mapping
             {
                 if (keys.Any(key => key.Name.ToLower().Equals(reader.GetName(i)) &&
                                     key.GetValue(obj).Equals(reader.GetValue(i))))
+                {
                     success++;
+                    if (success.Equals(keys.Length))
+                        return true;
+                }
             }
 
-            return keys.Length.Equals(success);
+            return false;
         }
 
         public static bool CompareKeys<TA, TB>(this TA objA, TB objB)

@@ -7,16 +7,16 @@ namespace Services.Database.Connection
 {
     public class ConnectionService : IConnectionService
     {
-        private Connector _connector;
+        private SqlConnector _sqlConnector;
 
-        public ConnectionService(Connector connector)
+        public ConnectionService(SqlConnector sqlConnector)
         {
-            _connector = connector;
+            _sqlConnector = sqlConnector;
         }
 
         public SqlDataReader Execute(string sql, Dictionary<string, SqlDbType> @params = null)
         {
-            return _connector.Execute(sql, @params);
+            return _sqlConnector.Execute(sql, @params);
         }
     }
 }
