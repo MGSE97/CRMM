@@ -39,7 +39,7 @@ namespace Database
             if(@params != null)
                 foreach (var param in @params)
                 {
-                    cmd.Parameters.Add($"@{param.Key}", param.Value);
+                    cmd.Parameters.AddWithValue($"@{param.Key}", param.Value);
                 }
             reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             

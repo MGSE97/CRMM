@@ -15,6 +15,7 @@ namespace Services.Database.Test
         {
             //ToDo map to string and return DateTime
            _connectionService.Execute("SELECT GetDate();");
+            return DateTime.Now;
         }
     }
 }

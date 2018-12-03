@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Database\Database.csproj" />
-    <ProjectReference Include="..\ModelMapper\DataMapper.csproj" />
+    <ProjectReference Include="..\Mapping\DataMapper\DataMapper.csproj" />
   </ItemGroup>
 
 </Project>
