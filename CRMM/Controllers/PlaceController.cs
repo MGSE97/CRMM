@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CRMM.Models;
 using DatabaseContext.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters.Internal;
 using Services;
 using Services.Database;
 using Services.Place;
@@ -27,7 +28,20 @@ namespace CRMM.Controllers
 
         public IActionResult List()
         {
-            return View(_workContext.CurrentUser.Places.Value);
+            var places = new List<Place>();
+            if (_workContext.CurrentUser.HasRoles(UserRoles.Admin, UserRoles.Supplier))
+            {
+                places.AddRange(Place.FindAll(_databaseService.Context));
+            }
+            else if (_workContext.CurrentUser.HasRoles(UserRoles.Worker))
+            {
+                places.AddRange(Place.FindAll(_databaseService.Context).Where(p => p.Orders.Value.Any(o => o.HasState(OrderStates.Valid) || o.HasState(ReclamationStates.Valid) || o.HasState(ReclamationStates.Handled) || o.Users.Value.Any(u => u.Id.Equals(_workContext.CurrentUser.Id)))));
+            }
+            else
+            {
+                places.AddRange(_workContext.CurrentUser.Places.Value);
+            }
+            return View(places);
         }
 
         [HttpGet]

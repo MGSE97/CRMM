@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <widget xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:vs="http://schemas.microsoft.com/appx/2014/htmlapps" id="io.cordova.myappe6c101" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" defaultlocale="cs-CZ">
-  <name>Cordova</name>
+  <name>CRMM</name>
   <description>Prázdný projekt, který vám pomocí architektury Apache Cordova pomůže sestavit aplikaci, která bude vhodná pro více mobilních platforem: Android, iOS a Windows Universal Platform</description>
-  <author href="http://cordova.io" email="dev@cordova.apache.org">Sem patří vaše jméno.</author>
+  <author href="http://cordova.io" email="dev@cordova.apache.org">Martin Gaier GAI0006</author>
   <vs:template-name>BlankJS</vs:template-name>
   <vs:toolsetVersion>6.3.1</vs:toolsetVersion>
   <engine name="android" spec="5.2.1" />
@@ -104,4 +104,8 @@
     <splash src="res/screens/windows/SplashScreen.scale-240.png" width="1152" height="1920" />
     <splash src="res/screens/windows/SplashScreenPhone.scale-240.png" width="1152" height="1920" />
   </platform>
+  <preference name="Orientation" value="portrait" />
+  <preference name="Fullscreen" value="False" />
+  <plugin name="cordova-plugin-inappbrowser" spec="~3.0.0" />
+  <plugin name="cordova-plugin-geolocation" spec="~2.4.3" />
 </widget>
