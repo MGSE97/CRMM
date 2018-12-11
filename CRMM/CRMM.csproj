@@ -2,17 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <UserSecretsId>aspnet-CRMM-57F8266E-6DEE-465B-8FEA-D56F54322F7B</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Database\Database.csproj" />
-    <ProjectReference Include="..\Mapping\DataMapper\DataMapper.csproj" />
+    <ProjectReference Include="..\Data\MySql\MySql.csproj" />
+    <ProjectReference Include="..\Service\Services\Services.csproj" />
   </ItemGroup>
 
 </Project>

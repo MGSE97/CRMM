@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Data.Mapping.Attributes;
 using Model.Database;
 using ModelCore;
@@ -19,9 +20,13 @@ namespace DatabaseContext.Models
 
         public Lazy<IList<State>> States { get; set; }
 
-        public Order()
+        public Order() : this(null)
         {
-            States = new Lazy<IList<State>>(() => { return State.FindAll(Context); });
+        }
+
+        public Order(IDBContext context) : base(context)
+        {
+            States = new Lazy<IList<State>>(() => new OrderState(Context) { OrderId = Id }.Find().Select(x => x.State.Value).ToList());
         }
 
         public new Order SetContext(IDBContext context)

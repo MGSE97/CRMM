@@ -1,0 +1,24 @@
+﻿@using Data.Mapping
+@model IList<ModelCore.BaseModel>
+
+<table class="table table-striped table-responsive">
+    <thead class="thead-dark">
+        <tr>
+            @foreach (var property in Model.FirstOrDefault().ToDictionary(AccessProtection.Private))
+            {
+                <th scope="col">@property.Key</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            @foreach (var property in item.ToDictionary(AccessProtection.Private))
+            {
+                <td>@property.Value</td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>

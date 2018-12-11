@@ -19,7 +19,7 @@ namespace Model.Manager
 
         public TModel Insert<TModel>(TModel model) where TModel : new()
         {
-            var pairs = model.ToDictionary(AccessProtection.Private, MapMode.Values);
+            var pairs = model.ToDictionary(AccessProtection.Private, MapMode.Values|MapMode.NotNull);
             var sql = Connector.SqlBuilder.Insert(model.GetTableName(), pairs.Keys.ToList());
             var id = Connector.ExecuteSqlScalar<ulong>(sql, pairs);
 
@@ -52,16 +52,16 @@ namespace Model.Manager
             if (EqualityComparer<TModel>.Default.Equals(model, default(TModel)))
             {
                 // use Type
-                var properties = typeof(TModel).GetProperties();
-                var sql = Connector.SqlBuilder.Search(model.GetTableName(), properties.Select(p => p.Name).ToList() , properties.Where(p => p.IsKey()).Select(p => p.Name).ToList());
+                var properties = typeof(TModel).GetProperties().Where(p => !p.IsLazy() && !p.IsIgnored());
+                var sql = Connector.SqlBuilder.Search(typeof(TModel).GetTableName(), properties.Select(p => p.Name).ToList());
                 return Connector.ExecuteSqlReader<TModel>(sql, null).ToList();
             }
             else
             {
                 // use Model
-                var both = model.ToDictionary(AccessProtection.Private);
-                var keys = model.ToDictionary(AccessProtection.Private, MapMode.Keys);
-                var sql = Connector.SqlBuilder.Search(model.GetTableName(), both.Keys.ToList(), keys.Keys.ToList());
+                var both = model.ToDictionary(AccessProtection.Private, MapMode.Both|MapMode.NotNull);
+                var columns = model.ToDictionary(AccessProtection.Private);
+                var sql = Connector.SqlBuilder.Search(model.GetTableName(), columns.Keys.ToList(), both.Keys.ToList());
                 return Connector.ExecuteSqlReader<TModel>(sql, both).ToList();
             }
             

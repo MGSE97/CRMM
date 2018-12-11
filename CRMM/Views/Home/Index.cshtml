@@ -1,5 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    ViewData["Path"] = new Dictionary<string, string>() {
+        { "Index", Url.Action("About") },
+        { "Home", "" }
+    };
 }
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">

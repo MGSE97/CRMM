@@ -15,7 +15,7 @@ namespace Data.Mapping
             for (int i = 0; i < reader.FieldCount; i++)
             {
                 // Parse & Set
-                foreach (var propertyInfo in model.GetType().GetProperties())
+                foreach (var propertyInfo in model.GetType().GetProperties().Where(p => !p.IsLazy()))
                 {
                     if (reader.GetName(i).Equals(propertyInfo.Name) && propertyInfo.CanWrite(accessProtection))
                         propertyInfo.SetValue(model, reader[i]);

@@ -8,6 +8,7 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/lib/fontawesome/css/all.css"/>
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -16,43 +17,61 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">CRMM</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
-                <partial name="_LoginPartial" />
-            </div>
+<body class="p-0">
+    <nav class="navbar navbar-inverse navbar-fixed-top bg-primary text-white">
+        <div class="navbar-header col-sm-3 col-md-2 text-center">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="text-white navbar-brand">CRMM</a>
+        </div>
+        <div class="col-sm-9 col-md-10">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    @{
+                        var path = ViewData["Path"] as IDictionary<string, string>;
+                        var lastPath = path?.LastOrDefault();
+                    }
+                    @if(path != null)
+                    {
+                        foreach (var item in path)
+                        {
+                            if (item.Key == lastPath?.Key)
+                            {
+                                <text> <li class="breadcrumb-item active" aria-current="page">@item.Key</li></text>
+                            }
+                            else
+                            {
+                                <text><li class="breadcrumb-item"><a href="@item.Value">@item.Key</a></li></text>
+                            }
+                        }
+                    }
+                </ol>
+            </nav>
         </div>
     </nav>
 
     <partial name="_CookieConsentPartial" />
-
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - CRMM</p>
-        </footer>
+    <div class="container-fluid row p-0 text-left bg-dark">
+        <nav class="col-sm-3 col-md-2">
+            <ul class="nav nav-pills flex-column fa-ul text-white">
+                <li class="nav-item"><span class="fa-li"><i class="fas fa-box"></i></span> <a asp-area="" asp-controller="Order" asp-action="List" class="nav-link text-white">Objednávky</a></li>
+                <li class="nav-item"><span class="fa-li"><i class="fas fa-building"></i></span> <a asp-area="" asp-controller="Place" asp-action="List" class="nav-link text-white">Lokace</a></li>
+                <li class="nav-item"><span class="fa-li"><i class="fas fa-users"></i></span> <a asp-area="" asp-controller="User" asp-action="List" class="nav-link text-white">Uživatelé</a></li>
+                <li class="nav-item"><span class="fa-li"><i class="fas fa-user-ninja"></i></span> <a asp-area="" asp-controller="Worker" asp-action="List" class="nav-link text-white">Zaměstnanci</a></li>
+            </ul>
+        </nav>
+        <div class="col-sm-9 col-md-10 bg-light">
+            @RenderBody()
+        </div>
     </div>
+    <hr class="m-0"/>
+    <footer class="text-center">
+        <p>&copy; 2018 - CRMM</p>
+    </footer>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/lib/fontawesome/js/all.js"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"

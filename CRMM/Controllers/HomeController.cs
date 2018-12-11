@@ -5,14 +5,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CRMM.Models;
+using DatabaseContext.Models;
+using Services.Database;
+using Services.WorkContext;
 
 namespace CRMM.Controllers
 {
     public class HomeController : Controller
     {
+        private IWorkContext _workContext;
+        private IDatabaseService _databaseService;
+
+        public HomeController(IWorkContext workContext, IDatabaseService databaseService)
+        {
+            _workContext = workContext;
+            _databaseService = databaseService;
+        }
+
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult Login()
+        {
+            _workContext.CurrentUser = new User(_databaseService.Context){Email = "admin",Password = "admin"}.Find().FirstOrDefault();
+            return RedirectToAction("Index");
+            //return View();
         }
 
         public IActionResult About()

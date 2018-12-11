@@ -9,8 +9,7 @@ namespace DatabaseContext.Models
     [Table("State")]
     public class State : BaseModel
     {
-        [Key]
-        public ulong Id { get; set; }
+        [Key] public ulong Id { get; set; }
 
         public string Type { get; set; }
 
@@ -19,6 +18,15 @@ namespace DatabaseContext.Models
         public DateTime CreatedOnUtc { get; set; }
 
         public DateTime DeletedOnUtc { get; set; }
+
+        public State() : this(null)
+        {
+
+        }
+
+        public State(IDBContext context) :base(context)
+        {
+        }
 
         public new State SetContext(IDBContext context)
         {

@@ -11,7 +11,7 @@ namespace Data.Mapping
         public static IDictionary<string, object> GetKeys<TModel>(this TModel model, AccessProtection accessProtection = AccessProtection.Public)
         {
             return model.GetType().GetProperties()
-                .Where(p => !p.IsIgnored() && !p.IsReadOnly() && p.CanWrite(accessProtection))
+                .Where(p => !p.IsLazy() && !p.IsIgnored() && !p.IsReadOnly() && p.CanWrite(accessProtection))
                 .GetTypeKeys()
                 .ToDictionary(k => k.Name, k => k.GetValue(model));
         }
@@ -22,12 +22,14 @@ namespace Data.Mapping
                 //throw new ArgumentNullException(nameof(model));
                 return new Dictionary<string, object>();
             return model.GetType().GetProperties()
-                .Where(p => 
+                .Where(p =>
+                    !p.IsLazy() &&
                     (!selected.Any() || selected.Any(s => s.Equals(p.Name))) &&
                     !p.IsIgnored() && 
+                   (!mapMode.HasFlag(MapMode.NotNull) || !p.GetValue(model).IsNull(p)) &&
                     p.CanRead(accessProtection) && 
                     (
-                        mapMode == MapMode.Both || !(mapMode.HasFlag(MapMode.Keys) ^ p.IsKey())
+                        mapMode.HasFlag(MapMode.Both) || !(mapMode.HasFlag(MapMode.Keys) ^ p.IsKey())
                     ))
                 .ToDictionary(p => p.Name, p => p.GetValue(model));
         }
@@ -68,7 +70,7 @@ namespace Data.Mapping
             var model = create ? new TModel() : baseModel;
 
             // Get model properties
-            var properties = model.GetType().GetProperties().Where(p => !p.IsIgnored() && !p.IsReadOnly() && p.CanWrite(accessProtection)).ToArray();
+            var properties = model.GetType().GetProperties().Where(p => !p.IsLazy() && !p.IsIgnored() && !p.IsReadOnly() && p.CanWrite(accessProtection)).ToArray();
 
             // Find and set values
             foreach (var value in values)

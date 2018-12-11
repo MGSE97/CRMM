@@ -10,10 +10,19 @@ namespace DatabaseContext.Models
     [Table("Role")]
     public class Role : BaseModel
     {
-        [Key]
-        public ulong Id { get; set; }
+        [Key] public ulong Id { get; set; }
 
         public string Name { get; set; }
+
+
+        public Role() : this(null)
+        {
+            
+        }
+
+        public Role(IDBContext context) : base(context)
+        {
+        }
 
         public new Role SetContext(IDBContext context)
         {

@@ -10,6 +10,16 @@ namespace ModelCore
     {
         protected IDBContext Context { get; set; }
 
+        public BaseModel()
+        {
+            
+        }
+
+        public BaseModel(IDBContext context)
+        {
+            Context = context;
+        }
+
         public virtual void SetContext(IDBContext context)
         {
             Context = context;
@@ -36,9 +46,12 @@ namespace ModelCore
             Context.ModelManager.Delete(model);
         }
 
-        public virtual IList<TModel> Find<TModel>(TModel model = default(TModel)) where TModel : new()
+        public virtual IList<TModel> Find<TModel>(TModel model = default(TModel)) where TModel : BaseModel, new()
         {
-            return Context.ModelManager.Search(model);
+            var found = Context.ModelManager.Search(model);
+            foreach (var f in found)
+                f.SetContext(Context);
+            return found;
         }
 
         public static IList<TModel> FindAll<TModel>(IDBContext context, TModel model = default(TModel)) where TModel : BaseModel, new()

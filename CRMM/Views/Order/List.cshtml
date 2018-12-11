@@ -1,0 +1,15 @@
+﻿@using ModelCore
+@model System.Collections.Generic.IList<DatabaseContext.Models.Order>
+
+@{
+    ViewBag.Title = "Obědnávky";
+    Layout = "_Layout";
+    ViewData["Path"] = new Dictionary<string, string>() {
+        { "CRMM", Url.Action("Index", "Home") },
+        { "Obědnávky", "" }
+    };
+}
+
+<h2>Obědnávky</h2>
+
+@Html.PartialAsync("_Table", Model.Select(i => i as BaseModel).ToList()).Result

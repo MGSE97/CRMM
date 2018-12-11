@@ -26,25 +26,25 @@ namespace MySql
 
         public string Insert(string table, IList<string> columns)
         {
-            return $"INSERT INTO {table} ({string.Join(",", columns)}) VALUES ({string.Join(",", columns.Select(c => $"@p_{c}"))})";
+            return $"INSERT INTO `{table}` ({string.Join(",", columns)}) VALUES ({string.Join(",", columns.Select(c => $"@p_{c}"))}); SELECT LAST_INSERT_ID();";
         }
 
         public string Update(string table, IList<string> columns, IList<string> keys)
         {
-            return $"UPDATE {table} SET {string.Join(",", columns.Select(c => $"{c} = @p_{c}"))} WHERE {string.Join(",", keys.Select(k => $"{k} = @p_{k}"))}";
+            return $"UPDATE `{table}` SET {string.Join(",", columns.Select(c => $"{c} = @p_{c}"))} WHERE {string.Join(" AND ", keys.Select(k => $"{k} = @p_{k}"))}";
         }
 
         public string Delete(string table, IList<string> keys)
         {
-            return $"DELETE FROM {table} WHERE {string.Join(",", keys.Select(k => $"{k} = @p_{k}"))}";
+            return $"DELETE FROM `{table}` WHERE {string.Join(" AND ", keys.Select(k => $"{k} = @p_{k}"))}";
         }
 
         public string Search(string table, IList<string> columns, IList<string> keys = null)
         {
-            if (keys != null)
-                return $"SELECT {string.Join(",", columns)} FROM {table} WHERE {string.Join(",", keys.Select(k => $"{k} = @p_{k}"))}";
+            if (keys != null && keys.Count > 0)
+                return $"SELECT {string.Join(",", columns)} FROM `{table}` WHERE {string.Join(" AND ", keys.Select(k => $"{k} = @p_{k}"))}";
             
-            return $"SELECT {string.Join(",", columns)} FROM {table}";
+            return $"SELECT {string.Join(",", columns)} FROM `{table}`";
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Data.Mapping
     {
         Keys = 1,
         Values = 2,
+        NotNull = 4,
         Both = Keys | Values
     }
 }
