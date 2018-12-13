@@ -13,6 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Model.Manager;
 using MySql;
 using Services.Database;
+using Services.Notification;
+using Services.Order;
+using Services.Place;
 using Services.User;
 using Services.WorkContext;
 
@@ -37,8 +40,19 @@ namespace CRMM
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(8);
+                options.Cookie.HttpOnly = false;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.IsEssential = true;
+            });
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddSessionStateTempDataProvider();
+            services.AddHttpContextAccessor();
 
             // Setup Database Service
             services.AddSingleton<IDatabaseService, DatabaseService>(s => 
@@ -47,14 +61,17 @@ namespace CRMM
                         new ModelManager(
                             new MySqlConnector(
                                 Configuration.GetConnectionString("GoogleMySqlDB")
-                                )
                             )
                         )
                     )
+                )
             );
 
-            services.AddSingleton<IWorkContext, WorkContext>();
+            services.AddScoped<IWorkContext, WorkContext>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPlaceService, PlaceService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<INotificationService, NotificationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +90,7 @@ namespace CRMM
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

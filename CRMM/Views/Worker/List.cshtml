@@ -1,15 +1,17 @@
-﻿@using ModelCore
+﻿@using DatabaseContext.Models
 @model System.Collections.Generic.IEnumerable<DatabaseContext.Models.User>
 
 @{
     ViewBag.Title = "Zaměstnanci";
     Layout = "_Layout";
     ViewData["Path"] = new Dictionary<string, string>() {
-        { "CRMM", Url.Action("Index", "Home") },
-        { "Zaměstnanci", "" }
-    };
+{ "CRMM", Url.Action("Index", "Home") },
+{ "Zaměstnanci", "" }
+};
 }
 
-<h2>Zaměstnanci</h2>
-
-@Html.PartialAsync("_Table", Model.Select(i => i as BaseModel).ToList()).Result
+@Html.PartialAsync("_Table", new TableModel("Zaměstnanci", typeof(User), Model, new TableOptions(
+    Url.Action("Create"),
+    Url.Action("Edit", new { id = "_id_" }),
+    Url.Action("Delete", new { id = "_id_" })
+))).Result

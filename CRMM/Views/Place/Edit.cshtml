@@ -1,0 +1,91 @@
+﻿@model CRMM.Models.PlaceModel
+
+@{
+    ViewData["Title"] = "Upravit lokaci";
+    Layout = "_Layout";
+    ViewData["Path"] = new Dictionary<string, string>() {
+        { "CRMM", Url.Action("Index", "Home") },
+        { "Lokace", Url.Action("List") },
+        { "Lokace "+Model.Id, "" }
+    };
+}
+
+<h2>Upravit lokaci @Model.Name</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @if (Model.Validating)
+        {
+            <h6 class="text-danger text-center" data-toggle="tooltip" data-placement="bottom" title="Nelze provádět žádné objednávky na aktuální lokaci!">Lokace čeká na schválení!</h6>
+        }
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" class="form-control" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <input asp-for="Type" class="form-control" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="X" class="control-label"></label>
+                <input asp-for="X" class="form-control" />
+                <span asp-validation-for="X" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Y" class="control-label"></label>
+                <input asp-for="Y" class="form-control" />
+                <span asp-validation-for="Y" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Uložit" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-8">
+        <div id='map' class="w-100 h-100"></div>
+        <script type="text/javascript">
+            var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v10',
+                center: [@Model.X.ToString().Replace(',','.'), @Model.Y.ToString().Replace(',', '.')],
+                zoom: 18
+            });
+            
+            // Add zoom and rotation controls to the map.
+            map.addControl(new mapboxgl.NavigationControl());
+            // Add geolocate control to the map.
+            map.addControl(new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            }));
+
+            // Add marker
+            var maker = new mapboxgl.Marker()
+                .setLngLat([@Model.X.ToString().Replace(',','.'), @Model.Y.ToString().Replace(',', '.')])
+                .addTo(map);
+
+            map.on('dblclick', function (e) {
+                document.getElementById('@Html.IdFor(m => m.X)').value = e.lngLat.lng.toString().replace('.', ',');
+                document.getElementById('@Html.IdFor(m => m.Y)').value = e.lngLat.lat.toString().replace('.', ',');
+                maker.setLngLat(e.lngLat);
+            });
+        </script>
+    </div>
+</div>
+
+<div>
+    <a asp-action="List">Zpět</a>
+</div>
+

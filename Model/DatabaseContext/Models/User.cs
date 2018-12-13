@@ -4,6 +4,7 @@ using System.Linq;
 using Data.Mapping.Attributes;
 using Model.Database;
 using ModelCore;
+using Newtonsoft.Json;
 
 namespace DatabaseContext.Models
 {
@@ -18,10 +19,10 @@ namespace DatabaseContext.Models
 
         public string Password { get; set; }
 
-        public Lazy<IList<Role>> Roles { get; set; }
-        public Lazy<IList<State>> States { get; set; }
-        public Lazy<IList<Place>> Places { get; set; }
-        public Lazy<IList<Order>> Orders { get; set; }
+        [JsonIgnore] public Lazy<IList<Role>> Roles { get; set; }
+        [JsonIgnore] public Lazy<IList<State>> States { get; set; }
+        [JsonIgnore] public Lazy<IList<Place>> Places { get; set; }
+        [JsonIgnore] public Lazy<IList<Order>> Orders { get; set; }
 
         public User() : this(null)
         {
@@ -52,7 +53,32 @@ namespace DatabaseContext.Models
         public User Delete()
         {
             if (Id > 0)
+            {
+                foreach (var state in States.Value)
+                {
+                    new UserState(Context) {UserId = Id, StateId = state.Id}.Delete();
+                    state.Delete();
+                }
+
+                foreach (var order in Orders.Value)
+                {
+                    new UserOrder(Context) {UserId = Id, OrderId = order.Id}.Delete();
+                    order.Delete();
+                }
+
+                foreach (var place in Places.Value)
+                {
+                    new UserPlace(Context) {UserId = Id, PlaceId = place.Id}.Delete();
+                    place.Delete();
+                }
+
+                foreach (var role in Roles.Value)
+                {
+                    new UserRole(Context) {UserId = Id, RoleId = role.Id}.Delete();
+                }
+
                 base.Delete(this);
+            }
 
             return this;
         }

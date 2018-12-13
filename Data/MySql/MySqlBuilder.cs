@@ -31,7 +31,7 @@ namespace MySql
 
         public string Update(string table, IList<string> columns, IList<string> keys)
         {
-            return $"UPDATE `{table}` SET {string.Join(",", columns.Select(c => $"{c} = @p_{c}"))} WHERE {string.Join(" AND ", keys.Select(k => $"{k} = @p_{k}"))}";
+            return $"UPDATE `{table}` SET {string.Join(",", columns.Select(c => $"{c} = @p_{c}"))} WHERE {string.Join(" AND ", keys.Select(k => $"{k} = @p_{k}"))}; SELECT {string.Join(",", columns)} FROM `{table}` WHERE {string.Join(" AND ", keys.Select(k => $"{k} = @p_{k}"))};";
         }
 
         public string Delete(string table, IList<string> keys)

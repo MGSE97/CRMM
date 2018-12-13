@@ -1,3 +1,7 @@
 ﻿@using CRMM
 @using CRMM.Models
+@using Services.Notification
+@using Services.WorkContext
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IWorkContext WorkContext
+@inject INotificationService Notifications

@@ -4,6 +4,7 @@ using System.Linq;
 using Data.Mapping.Attributes;
 using Model.Database;
 using ModelCore;
+using Newtonsoft.Json;
 
 namespace DatabaseContext.Models
 {
@@ -22,9 +23,9 @@ namespace DatabaseContext.Models
 
         public double Y { get; set; }
 
-        public Lazy<IList<Order>> Orders { get; set; }
+        [JsonIgnore] public Lazy<IList<Order>> Orders { get; set; }
 
-        public Lazy<IList<State>> States { get; set; }
+        [JsonIgnore] public Lazy<IList<State>> States { get; set; }
 
         public Place() : this(null)
         {
@@ -54,7 +55,30 @@ namespace DatabaseContext.Models
         public Place Delete()
         {
             if (Id > 0)
+            {
+                foreach (var state in States.Value)
+                {
+                    new PlaceState(Context) {PlaceId = Id, StateId = state.Id}.Delete();
+                    state.Delete();
+                }
+
+                bool first = true;
+                foreach (var order in Orders.Value)
+                {
+                    if (first)
+                    {
+                        foreach (var orderState in new OrderState(Context) { PlaceId = Id}.Find())
+                        {
+                            orderState.Delete();
+                        }
+                        first = false;
+                    }
+
+                    order.Delete();
+                }
+
                 base.Delete(this);
+            }
 
             return this;
         }

@@ -1,0 +1,87 @@
+﻿@model RegisterModel
+
+@{
+    ViewBag.Title = "Registrace";
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CRMM</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/fontawesome/css/all.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+    </environment>
+</head>
+<body>
+    <div class="container p-5">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 offset-sm-0 offset-md-3 offset-lg-4 offset-xl-4">
+                <h3>Registrace</h3>
+                @using (var form = Html.BeginForm("Register", "Home", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <fieldset>
+                        @Html.LabelFor(m => m.Name)
+                        <div class="form-group">
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", autofocus = String.Empty })
+                            @Html.ValidationMessageFor(m => m.Name)
+                        </div>
+                        @Html.LabelFor(m => m.Email)
+                        <div class="form-group">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email)
+                        </div>
+                        @Html.LabelFor(m => m.Password)
+                        <div class="form-group">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Password)
+                        </div>
+                        <button type="submit" class="btn btn-success">Registrovat</button>
+                        <a href="@Url.Action("Login", "Home")" class="btn btn-primary float-right" target="_self">Přihlásit</a>
+                    </fieldset>
+                }
+                <hr />
+                <footer class="text-center">
+                    <p>&copy; 2018 - CRMM</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/popper/popper.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/fontawesome/js/all.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+    </environment>
+</body>
+</html>

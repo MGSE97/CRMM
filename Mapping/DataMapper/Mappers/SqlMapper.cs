@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Data.Mapping.Extensions;
@@ -18,7 +19,12 @@ namespace Data.Mapping
                 foreach (var propertyInfo in model.GetType().GetProperties().Where(p => !p.IsLazy()))
                 {
                     if (reader.GetName(i).Equals(propertyInfo.Name) && propertyInfo.CanWrite(accessProtection))
-                        propertyInfo.SetValue(model, reader[i]);
+                    {
+                        object value = reader[i];
+                        if (value == DBNull.Value)
+                            value = null;
+                        propertyInfo.SetValue(model, value);
+                    }
                 }
             }
 

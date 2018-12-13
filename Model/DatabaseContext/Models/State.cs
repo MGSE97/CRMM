@@ -17,7 +17,7 @@ namespace DatabaseContext.Models
 
         public DateTime CreatedOnUtc { get; set; }
 
-        public DateTime DeletedOnUtc { get; set; }
+        public DateTime? DeletedOnUtc { get; set; }
 
         public State() : this(null)
         {

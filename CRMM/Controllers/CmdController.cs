@@ -97,10 +97,10 @@ namespace CRMM.Controllers
             {
                 var data = new List<BaseModel>
                 {
-                    new Role {Name = "Admin"},
-                    new Role {Name = "Supplier"},
-                    new Role {Name = "Worker"},
-                    new Role {Name = "Customer"},
+                    new Role {Name = UserRoles.Admin},
+                    new Role {Name = UserRoles.Supplier},
+                    new Role {Name = UserRoles.Worker},
+                    new Role {Name = UserRoles.Customer},
                     new DatabaseContext.Models.User {Name = "Admin", Email = "admin", Password = "admin"},
                 };
 

@@ -19,7 +19,7 @@ namespace Model.Manager
 
         public TModel Insert<TModel>(TModel model) where TModel : new()
         {
-            var pairs = model.ToDictionary(AccessProtection.Private, MapMode.Values|MapMode.NotNull);
+            var pairs = model.ToDictionary(AccessProtection.Private, MapMode.Both|MapMode.NotNull);
             var sql = Connector.SqlBuilder.Insert(model.GetTableName(), pairs.Keys.ToList());
             var id = Connector.ExecuteSqlScalar<ulong>(sql, pairs);
 
@@ -33,7 +33,7 @@ namespace Model.Manager
 
         public TModel Update<TModel>(TModel model) where TModel : new()
         {
-            var values = model.ToDictionary(AccessProtection.Private, MapMode.Values);
+            var values = model.ToDictionary(AccessProtection.Private, MapMode.Both|MapMode.NotNull);
             var keys = model.ToDictionary(AccessProtection.Private, MapMode.Keys);
             var sql = Connector.SqlBuilder.Update(model.GetTableName(), values.Keys.ToList(), keys.Keys.ToList());
             return Connector.ExecuteSqlReader<TModel>(sql, values.Union(keys).ToDictionary(p => p.Key, p => p.Value)).FirstOrDefault();

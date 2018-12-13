@@ -38,14 +38,14 @@ namespace Services.User
                 new UserRole(_databaseService.Context)
                 {
                     UserId = user.Id,
-                    RoleId = new Role(_databaseService.Context) {Name = "Customer"}.Find().FirstOrDefault().Id
+                    RoleId = new Role(_databaseService.Context) {Name = UserRoles.Customer}.Find().FirstOrDefault().Id
                 }.Save();
 
                 // Require account validation
                 var confirm = new State(_databaseService.Context)
                 {
-                    Type = "UserValidation",
-                    Description = "New customer account"
+                    Type = UserStates.Validating,
+                    Description = $"Zákazník {user.Name} čeká na ověření"
                 }.Save();
 
                 new UserState(_databaseService.Context)
@@ -60,7 +60,7 @@ namespace Services.User
                 new UserRole(_databaseService.Context)
                 {
                     UserId = user.Id,
-                    RoleId = new Role(_databaseService.Context) { Name = "Worker" }.Find().FirstOrDefault().Id
+                    RoleId = new Role(_databaseService.Context) { Name = UserRoles.Worker }.Find().FirstOrDefault().Id
                 }.Save();
             }
 

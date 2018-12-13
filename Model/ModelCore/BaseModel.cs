@@ -2,13 +2,17 @@
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using Data.Mapping;
+using Data.Mapping.Attributes;
 using Model.Database;
+using Newtonsoft.Json;
 
 namespace ModelCore
 {
     public class BaseModel
     {
-        protected IDBContext Context { get; set; }
+        [Ignore]
+        [JsonIgnore]
+        public IDBContext Context { get; protected set; }
 
         public BaseModel()
         {

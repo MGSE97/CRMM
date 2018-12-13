@@ -1,15 +1,51 @@
-﻿@using ModelCore
+﻿@using DatabaseContext.Models
+@using ModelCore
 @model System.Collections.Generic.IList<DatabaseContext.Models.Place>
 
 @{
     ViewBag.Title = "Lokace";
     Layout = "_Layout";
     ViewData["Path"] = new Dictionary<string, string>() {
-        { "CRMM", Url.Action("Index", "Home") },
-        { "Lokace", "" }
-    };
+{ "CRMM", Url.Action("Index", "Home") },
+{ "Lokace", "" }
+};
 }
 
-<h2>Lokace</h2>
+@Html.PartialAsync("_Table", new TableModel("Lokace", typeof(Place), Model, new TableOptions(
+    Url.Action("Create"),
+    Url.Action("Edit", new { id = "_id_" }),
+    Url.Action("Delete", new { id = "_id_" })
+))).Result
 
-@Html.PartialAsync("_Table", Model.Select(i => i as BaseModel).ToList()).Result
+<div class="embed-responsive embed-responsive-21by9">
+    <div id='map' class="embed-responsive-item"></div>
+    <script type="text/javascript">
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v10',
+        center: [0, 0],
+        zoom: 1
+    });
+
+    // Add zoom and rotation controls to the map.
+    map.addControl(new mapboxgl.NavigationControl());
+    // Add geolocate control to the map.
+    map.addControl(new mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true
+    }));
+
+
+    // Add markers
+    @foreach (var place in Model)
+    {
+        <text>
+    new mapboxgl.Marker()
+        .setLngLat([@place.X.ToString().Replace(',', '.'), @place.Y.ToString().Replace(',','.')])
+        .addTo(map);
+        </text>
+    }
+    </script>
+</div>

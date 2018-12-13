@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Services
+@{
+    var userValidating = WorkContext.CurrentUser.HasState(UserStates.Validating);
+    var userNofications = Notifications.GetUserNotifications(WorkContext.CurrentUser);
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -8,7 +13,13 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-        <link rel="stylesheet" href="~/lib/fontawesome/css/all.css"/>
+        <link rel="stylesheet" href="~/lib/fontawesome/css/all.css" />
+        <link href='https://api.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
+
+        <script src='https://api.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
+        <script type="text/javascript">
+            mapboxgl.accessToken = 'pk.eyJ1IjoibWdzZSIsImEiOiJjanBsdHBmeW8wNXQ3NDJxdWdrcXNrcTZ3In0.QOliOLGt5uNCEZAfxirvOQ';
+        </script>
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -20,58 +31,161 @@
 <body class="p-0">
     <nav class="navbar navbar-inverse navbar-fixed-top bg-primary text-white">
         <div class="navbar-header col-sm-3 col-md-2 text-center">
-            <a asp-area="" asp-controller="Home" asp-action="Index" class="text-white navbar-brand">CRMM</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="text-white navbar-brand"><i class="fas fa-map-marked-alt"></i>&nbsp;CRMM</a>
         </div>
-        <div class="col-sm-9 col-md-10">
+        <div class="col-sm-8 col-md-9">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     @{
                         var path = ViewData["Path"] as IDictionary<string, string>;
                         var lastPath = path?.LastOrDefault();
                     }
-                    @if(path != null)
+                    @if (path != null)
                     {
                         foreach (var item in path)
                         {
                             if (item.Key == lastPath?.Key)
                             {
-                                <text> <li class="breadcrumb-item active" aria-current="page">@item.Key</li></text>
+                                <text>
+                                    <li class="breadcrumb-item active" aria-current="page">@item.Key</li></text>
                             }
                             else
                             {
-                                <text><li class="breadcrumb-item"><a href="@item.Value">@item.Key</a></li></text>
+                                <text>
+                                    <li class="breadcrumb-item"><a href="@item.Value">@item.Key</a></li></text>
                             }
                         }
                     }
                 </ol>
             </nav>
         </div>
+        <div class="col-sm-1 col-md-1">
+            <ul class="nav nav-fill">
+                <li class="nav-item">
+                    <a class="text-white" data-toggle="collapse" href="#notifications" role="button" aria-expanded="false" aria-controls="notifications">
+                        <i class="@Html.Raw(userNofications.Any()?"text-danger fas":"far") fa-bell fa-2x">
+                        </i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="text-white" data-toggle="collapse" href="#userinfo" role="button" aria-expanded="false" aria-controls="userinfo">
+                        <i class="far fa-user fa-2x">
+                        </i>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </nav>
+
+    <div class="position-absolute align-top bg-primary border border-dark collapse" id="notifications" style="right: 0; z-index: 1000;">
+        <div class="col-12">
+            <div class="panel panel-default">
+                <div class="panel-heading text-white">
+                    <h4 class="panel-title">Oznámení</h4>
+                </div>
+                <div class="panel-body">
+                    @foreach (var notification in userNofications)
+                    {
+                    <div class="alert alert-@notification.Level">
+                        <i class="@notification.Icon"></i> @notification.Message
+                        @if (notification.Type.Equals(UserStates.Validating))
+                        {
+                            <br />
+                            <div class="p-1">
+                                <a class="btn btn-sm btn-success" href="@Url.Action("Validate","Customer",new {id=notification.Data})"><i class="fas fa-check"></i> Schválit</a>
+                                <a class="btn btn-sm btn-danger float-right" href="@Url.Action("Delete","Customer",new {id=notification.Data})"><i class="fas fa-dumpster-fire"></i> Smazat</a>
+                            </div>
+                        }
+                        else if (notification.Type.Equals(PlaceStates.Validating))
+                        {
+                            <br />
+                            <div class="p-1">
+                                <a class="btn btn-sm btn-success" href="@Url.Action("Validate","Place",new {id=notification.Data})"><i class="fas fa-check"></i> Schválit</a>
+                                <a class="btn btn-sm btn-danger float-right" href="@Url.Action("Delete","Place",new {id=notification.Data})"><i class="fas fa-dumpster-fire"></i> Smazat</a>
+                            </div>
+                        }
+                        else if (notification.Type.Equals(OrderStates.Validating))
+                        {
+                            <br />
+                            <div class="p-1">
+                                <a class="btn btn-sm btn-success" href="@Url.Action("Validate","Order",new {id=notification.Data})"><i class="fas fa-check"></i> Schválit</a>
+                                <a class="btn btn-sm btn-danger float-right" href="@Url.Action("Delete","Order",new {id=notification.Data})"><i class="fas fa-dumpster-fire"></i> Smazat</a>
+                            </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-absolute align-top bg-primary border border-dark text-white collapse" id="userinfo" style="right: 0; z-index: 1000;">
+        <div class="col-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="p-3 text-center"><i class="fas fa-user-tie fa-3x"></i><br/> @WorkContext.CurrentUser.Name</h4>
+                    @if (userValidating)
+                    {
+                        <h6 class="text-center text-danger">Účet čeká na ověření</h6>
+                    }
+                </div>
+                <div class="panel-body">
+                    Role:
+                    <ul>
+                        @foreach (var role in WorkContext.CurrentUser.Roles.Value.OrderBy(r => r.Id).Select(r => r.Name))
+                        {
+                            <li>@role</li>
+                        }
+                    </ul>
+                    <a class="btn btn-sm btn-danger m-2 float-right" href="@Url.Action("Logout", "Home")"><i class="fa fa-sign-out-alt"></i>&nbsp;Odhlásit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <partial name="_CookieConsentPartial" />
     <div class="container-fluid row p-0 text-left bg-dark">
-        <nav class="col-sm-3 col-md-2">
-            <ul class="nav nav-pills flex-column fa-ul text-white">
-                <li class="nav-item"><span class="fa-li"><i class="fas fa-box"></i></span> <a asp-area="" asp-controller="Order" asp-action="List" class="nav-link text-white">Objednávky</a></li>
-                <li class="nav-item"><span class="fa-li"><i class="fas fa-building"></i></span> <a asp-area="" asp-controller="Place" asp-action="List" class="nav-link text-white">Lokace</a></li>
-                <li class="nav-item"><span class="fa-li"><i class="fas fa-users"></i></span> <a asp-area="" asp-controller="User" asp-action="List" class="nav-link text-white">Uživatelé</a></li>
-                <li class="nav-item"><span class="fa-li"><i class="fas fa-user-ninja"></i></span> <a asp-area="" asp-controller="Worker" asp-action="List" class="nav-link text-white">Zaměstnanci</a></li>
-            </ul>
-        </nav>
-        <div class="col-sm-9 col-md-10 bg-light">
-            @RenderBody()
-        </div>
+        @if (userValidating)
+        {
+            <div class="col-sm-12 col-md-12 bg-light">
+                @RenderBody()
+            </div>
+        }
+        else
+        {
+            <nav class="col-sm-3 col-md-2">
+                <ul class="nav nav-pills flex-column fa-ul text-white">
+                    <li class="nav-item"><span class="fa-li"><i class="fas fa-box"></i></span> <a asp-area="" asp-controller="Order" asp-action="List" class="nav-link text-white">Objednávky</a></li>
+                    <li class="nav-item"><span class="fa-li"><i class="fas fa-building"></i></span> <a asp-area="" asp-controller="Place" asp-action="List" class="nav-link text-white">Lokace</a></li>
+                    @if (WorkContext.CurrentUser.HasRoles(UserRoles.Admin, UserRoles.Supplier))
+                    {
+                        <li class="nav-item"><span class="fa-li"><i class="fas fa-users"></i></span> <a asp-area="" asp-controller="Customer" asp-action="List" class="nav-link text-white">Zákazníci</a></li>
+                        <li class="nav-item"><span class="fa-li"><i class="fas fa-user-ninja"></i></span> <a asp-area="" asp-controller="Worker" asp-action="List" class="nav-link text-white">Zaměstnanci</a></li>
+                    }
+                </ul>
+            </nav>
+            <div class="col-sm-9 col-md-10 bg-light">
+                @RenderBody()
+            </div>
+        }
     </div>
-    <hr class="m-0"/>
+    <hr class="m-0" />
     <footer class="text-center">
         <p>&copy; 2018 - CRMM</p>
     </footer>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/popper/popper.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         <script src="~/lib/fontawesome/js/all.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"

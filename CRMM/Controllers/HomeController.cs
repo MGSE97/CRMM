@@ -5,8 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CRMM.Models;
+using Data.Mapping.Extensions;
 using DatabaseContext.Models;
 using Services.Database;
+using Services.User;
 using Services.WorkContext;
 
 namespace CRMM.Controllers
@@ -15,37 +17,87 @@ namespace CRMM.Controllers
     {
         private IWorkContext _workContext;
         private IDatabaseService _databaseService;
+        private IUserService _userService;
 
-        public HomeController(IWorkContext workContext, IDatabaseService databaseService)
+        public HomeController(IWorkContext workContext, IDatabaseService databaseService, IUserService userService)
         {
             _workContext = workContext;
             _databaseService = databaseService;
+            _userService = userService;
         }
 
         public IActionResult Index()
         {
+            if (_workContext.CurrentUser == null)
+                return RedirectToAction("Login");
+            //_workContext.CurrentUser = new User(_databaseService.Context) { Email = "admin", Password = "admin" }.Find().FirstOrDefault();
             return View();
         }
 
+        [Route("login")]
+        [HttpGet]
         public IActionResult Login()
         {
-            _workContext.CurrentUser = new User(_databaseService.Context){Email = "admin",Password = "admin"}.Find().FirstOrDefault();
-            return RedirectToAction("Index");
-            //return View();
+            return View(new LoginModel());
         }
 
-        public IActionResult About()
+        [Route("login")]
+        [HttpPost]
+        public IActionResult Login(LoginModel model)
         {
-            ViewData["Message"] = "Your application description page.";
+            if (ModelState.IsValid)
+            {
+                var user = _userService.Login(model.Email, model.Password);
+                if (user != null)
+                {
+                    _workContext.CurrentUser = user;
+                    return RedirectToAction("Index");
+                }
+            }
 
-            return View();
+            return View(model);
         }
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
 
-            return View();
+        [Route("register")]
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View(new RegisterModel());
+        }
+
+        [Route("register")]
+        [HttpPost]
+        public IActionResult Register(RegisterModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = _userService.Register(model.Name, model.Email, model.Password, true);
+                    if (user != null)
+                    {
+                        _workContext.CurrentUser = user;
+                        return RedirectToAction("Index");
+                    }
+                }
+                catch (ExistingUserException)
+                {
+                    model.Email = "";
+                    return View(model);
+                }
+                
+            }
+
+            return View(model);
+        }
+
+        [Route("logout")]
+        public IActionResult Logout()
+        {
+            _workContext.CurrentUser = null;
+            _workContext.ClearCache();
+            return RedirectToAction("Login");
         }
 
         public IActionResult Privacy()

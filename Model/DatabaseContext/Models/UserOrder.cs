@@ -4,6 +4,7 @@ using System.Linq;
 using Data.Mapping.Attributes;
 using Model.Database;
 using ModelCore;
+using Newtonsoft.Json;
 
 namespace DatabaseContext.Models
 {
@@ -13,8 +14,8 @@ namespace DatabaseContext.Models
         [Key] public ulong UserId { get; set; }
         [Key] public ulong OrderId { get; set; }
 
-        public Lazy<User> User { get; set; }
-        public Lazy<Order> Order { get; set; }
+        [JsonIgnore] public Lazy<User> User { get; set; }
+        [JsonIgnore] public Lazy<Order> Order { get; set; }
 
         public UserOrder() : this(null)
         {
@@ -35,7 +36,19 @@ namespace DatabaseContext.Models
 
         public UserOrder Save(bool insert = false)
         {
-            return base.Save(this, insert);
+            if (insert == false)
+            {
+                try
+                {
+                    Find()?.FirstOrDefault()?.Delete();
+                }
+                catch
+                {
+                    // Ignored
+                }
+            }
+
+            return base.Save(this, true);
         }
 
         public UserOrder Delete()

@@ -4,6 +4,7 @@ using System.Linq;
 using Data.Mapping.Attributes;
 using Model.Database;
 using ModelCore;
+using Newtonsoft.Json;
 
 namespace DatabaseContext.Models
 {
@@ -13,8 +14,8 @@ namespace DatabaseContext.Models
         [Key] public ulong PlaceId { get; set; }
         [Key] public ulong StateId { get; set; }
 
-        public Lazy<Place> Place { get; set; }
-        public Lazy<State> State { get; set; }
+        [JsonIgnore] public Lazy<Place> Place { get; set; }
+        [JsonIgnore] public Lazy<State> State { get; set; }
 
         public PlaceState() : this(null)
         {
@@ -35,7 +36,19 @@ namespace DatabaseContext.Models
 
         public PlaceState Save(bool insert = false)
         {
-            return base.Save(this, insert);
+            if (insert == false)
+            {
+                try
+                {
+                    Find()?.FirstOrDefault()?.Delete();
+                }
+                catch
+                {
+                    // Ignored
+                }
+            }
+
+            return base.Save(this, true);
         }
 
         public PlaceState Delete()

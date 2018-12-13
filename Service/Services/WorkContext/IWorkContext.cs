@@ -3,5 +3,6 @@
     public interface IWorkContext
     {
         DatabaseContext.Models.User CurrentUser { get; set; }
+        IWorkContext ClearCache();
     }
 }
