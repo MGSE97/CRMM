@@ -46,7 +46,7 @@ namespace CRMM
                 options.IdleTimeout = TimeSpan.FromHours(8);
                 options.Cookie.HttpOnly = false;
                 options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.IsEssential = true;
             });
             services.AddMvc()

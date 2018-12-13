@@ -6,9 +6,9 @@
     ViewBag.Title = "Lokace";
     Layout = "_Layout";
     ViewData["Path"] = new Dictionary<string, string>() {
-{ "CRMM", Url.Action("Index", "Home") },
-{ "Lokace", "" }
-};
+        { "CRMM", Url.Action("Index", "Home") },
+        { "Lokace", "" }
+    };
 }
 
 @Html.PartialAsync("_Table", new TableModel("Lokace", typeof(Place), Model, new TableOptions(
@@ -42,9 +42,13 @@
     @foreach (var place in Model)
     {
         <text>
-    new mapboxgl.Marker()
-        .setLngLat([@place.X.ToString().Replace(',', '.'), @place.Y.ToString().Replace(',','.')])
-        .addTo(map);
+        new mapboxgl.Marker()
+            .setLngLat([@place.X.ToString().Replace(',', '.'), @place.Y.ToString().Replace(',','.')])
+            .setPopup(
+                new mapboxgl.Popup({ offset: 25 })
+                    .setHTML('<h6 class="m-0">@place.Name</h6><small>@place.Type</small><br/>@place.Address')
+            )
+            .addTo(map);
         </text>
     }
     </script>

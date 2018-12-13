@@ -19,6 +19,8 @@ namespace DatabaseContext.Models
 
         public string Type { get; set; }
 
+        [JsonIgnore] public Lazy<IList<User>> Users { get; set; }
+
         [JsonIgnore] public Lazy<IList<State>> States { get; set; }
 
         public Order() : this(null)
@@ -27,6 +29,7 @@ namespace DatabaseContext.Models
 
         public Order(IDBContext context) : base(context)
         {
+            Users = new Lazy<IList<User>>(() => new UserOrder(Context) { OrderId = Id }.Find().Select(x => x.User.Value).ToList());
             States = new Lazy<IList<State>>(() => new OrderState(Context) { OrderId = Id }.Find().Select(x => x.State.Value).ToList());
         }
 

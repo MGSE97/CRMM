@@ -18,6 +18,8 @@ namespace Services.User
 
         public DatabaseContext.Models.User Login(string email, string password)
         {
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
             return new DatabaseContext.Models.User(_databaseService.Context) {Email = email, Password = password}.Find().FirstOrDefault();
         }
 

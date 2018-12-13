@@ -31,6 +31,8 @@ namespace CRMM.Models
 
         public bool Validating { get; set; }
 
+        public string NextState { get; set; }
+
         public Order ToOrder(IDBContext context)
         {
             return new Order(context)
@@ -53,7 +55,8 @@ namespace CRMM.Models
                 Name = order.Name,
                 Type = order.Type,
                 Description = order.Description,
-                Validating = order.HasState(OrderStates.Validating)
+                Validating = order.HasState(OrderStates.Validating),
+                NextState = OrderStates.GetNextState(order)
             };
         }
     }
