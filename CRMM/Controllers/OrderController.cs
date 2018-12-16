@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRMM.Models;
+using CRMM.Utils;
 using DatabaseContext.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -28,6 +29,11 @@ namespace CRMM.Controllers
 
         public IActionResult List()
         {
+            return View(ListData());
+        }
+
+        private List<Order> ListData()
+        {
             var orders = new List<Order>();
             if (_workContext.CurrentUser.HasRoles(UserRoles.Admin, UserRoles.Supplier))
             {
@@ -38,9 +44,9 @@ namespace CRMM.Controllers
                 orders.AddRange(Order.FindAll(_databaseService.Context).Where(o => o.HasState(OrderStates.Valid, ReclamationStates.Valid) || o.Users.Value.Any(u => u.Id.Equals(_workContext.CurrentUser.Id))));
             }
             orders.AddRange(_workContext.CurrentUser.Orders.Value);
-            return View(orders.Distinct().ToList());
+            
+            return orders.Distinct().ToList();
         }
-
 
         [HttpGet]
         public IActionResult Create()
@@ -143,6 +149,13 @@ namespace CRMM.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+
+        [Route("[controller]/[action]/{type}")]
+        public IActionResult Export(string type)
+        {
+            return (IActionResult)ListData().ExportData(type, "Orders") ?? RedirectToAction("Error", "Home");
         }
     }
 }

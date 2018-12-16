@@ -34,7 +34,8 @@ namespace CRMM.Models
         Create = 1,
         Edit = 2,
         Delete = 4,
-        Full = Create|Edit|Delete
+        Export = 8,
+        Full = Create|Edit|Delete|Export
     }
 
     public class TableOptions
@@ -42,17 +43,19 @@ namespace CRMM.Models
         public string CreateUrl { get; set; }
         public string EditUrl { get; set; }
         public string DeleteUrl { get; set; }
+        public string ExportUrl { get; set; }
 
         public TableOptions()
         {
             
         }
 
-        public TableOptions(string createUrl, string editUrl, string deleteUrl)
+        public TableOptions(string createUrl, string editUrl, string deleteUrl, string exportUrl)
         {
             CreateUrl = createUrl;
             EditUrl = editUrl;
             DeleteUrl = deleteUrl;
+            ExportUrl = exportUrl;
         }
     }
 }

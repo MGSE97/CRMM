@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRMM.Models;
+using CRMM.Utils;
 using DatabaseContext.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services;
@@ -28,8 +29,15 @@ namespace CRMM.Controllers
         public IActionResult List()
         {
             if (_workContext.CurrentUser.HasRoles(UserRoles.Admin, UserRoles.Supplier))
-                return View(new User(_databaseService.Context).Find().Where(u => u.HasRoles(UserRoles.Worker)));
+                return base.View(ListData());
             return RedirectToAction("Index", "Home");
+        }
+
+        private IEnumerable<User> ListData(bool valid = false)
+        {
+            if (valid || _workContext.CurrentUser.HasRoles(UserRoles.Admin, UserRoles.Supplier))
+                return new User(_databaseService.Context).Find().Where(u => u.HasRoles(UserRoles.Worker));
+            return new List<User>();
         }
 
         [HttpGet]
@@ -95,6 +103,13 @@ namespace CRMM.Controllers
             }
 
             return RedirectToAction("List");
+        }
+
+
+        [Route("[controller]/[action]/{type}")]
+        public IActionResult Export(string type)
+        {
+            return (IActionResult)ListData().ExportData(type, "Workers") ?? RedirectToAction("Error", "Home");
         }
     }
 }

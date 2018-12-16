@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using CRMM.Models;
+using CRMM.Utils;
 using DatabaseContext.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters.Internal;
 using Services;
 using Services.Database;
 using Services.Place;
@@ -28,6 +27,11 @@ namespace CRMM.Controllers
 
         public IActionResult List()
         {
+            return View(ListData());
+        }
+
+        private List<Place> ListData()
+        {
             var places = new List<Place>();
             if (_workContext.CurrentUser.HasRoles(UserRoles.Admin, UserRoles.Supplier))
             {
@@ -41,7 +45,8 @@ namespace CRMM.Controllers
             {
                 places.AddRange(_workContext.CurrentUser.Places.Value);
             }
-            return View(places);
+
+            return places;
         }
 
         [HttpGet]
@@ -110,5 +115,13 @@ namespace CRMM.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        [Route("[controller]/[action]/{type}")]
+        public IActionResult Export(string type)
+        {
+            return (IActionResult) ListData().ExportData(type, "Places") ?? RedirectToAction("Error", "Home");
+        }
+
+        
     }
 }

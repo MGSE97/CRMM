@@ -13,5 +13,6 @@
 @Html.PartialAsync("_Table", new TableModel("Zaměstnanci", typeof(User), Model, new TableOptions(
     Url.Action("Create"),
     Url.Action("Edit", new { id = "_id_" }),
-    Url.Action("Delete", new { id = "_id_" })
+    Url.Action("Delete", new { id = "_id_" }),
+    Url.Action("Export", new { type = "_type_" })
 ))).Result
