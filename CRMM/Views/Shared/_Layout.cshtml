@@ -104,7 +104,7 @@
                                 <a class="btn btn-sm btn-danger float-right" href="@Url.Action("Delete","Place",new {id=notification.Data})"><i class="fas fa-dumpster-fire"></i> Smazat</a>
                             </div>
                         }
-                        else if (notification.Type.Equals(OrderStates.Validating))
+                        else if (notification.Type.Equals(OrderStates.Validating) || notification.Type.Equals(ReclamationStates.Validating))
                         {
                             <br />
                             <div class="p-1">
@@ -144,7 +144,7 @@
     </div>
 
 
-    <partial name="_CookieConsentPartial" />
+    @*<partial name="_CookieConsentPartial" />*@
     <div class="container-fluid row p-0 text-left bg-dark">
         @if (userValidating)
         {

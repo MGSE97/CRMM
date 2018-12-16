@@ -37,7 +37,7 @@ namespace DatabaseContext.Models
         public Place(IDBContext context) : base(context)
         {
             Users = new Lazy<IList<User>>(() => new UserPlace(Context) { PlaceId = Id }.Find().Select(x => x.User.Value).ToList());
-            Orders = new Lazy<IList<Order>>(() => new OrderState(Context) { PlaceId = Id }.Find().Select(x => x.Order.Value).ToList());
+            Orders = new Lazy<IList<Order>>(() => new OrderState(Context) { PlaceId = Id }.Find().Select(x => x.Order.Value).Distinct(new ModelComparer<Order>(o => o.Id, (x, y) => x.Id == y.Id)).ToList());
             States = new Lazy<IList<State>>(() => new PlaceState(Context) { PlaceId = Id }.Find().Select(x => x.State.Value).ToList());
         }
 

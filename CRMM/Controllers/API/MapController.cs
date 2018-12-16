@@ -46,7 +46,7 @@ namespace CRMM.Controllers.API
 
         // POST: api/Map/location/{id}
         [HttpPost("location")]
-        public MapPlaceModel PostLocation([FromBody] ulong id)
+        public MapPlaceModel PostLocation([FromForm] ulong id)
         {
             return GetPlace(id);
         }
@@ -66,7 +66,7 @@ namespace CRMM.Controllers.API
             else if (_workContext.CurrentUser.HasRoles(UserRoles.Worker))
             {
                 // Show delivery, order validated waiting
-                locations.AddRange(Place.FindAll(_databaseService.Context).Where(p => p.Orders.Value.Any(o => o.HasState(OrderStates.Valid) || o.Users.Value.Any(u => u.Id.Equals(_workContext.CurrentUser.Id)))).Select(p => new MapPlaceModel() { Place = p.ToModel() }));
+                locations.AddRange(Place.FindAll(_databaseService.Context).Where(p => p.Orders.Value.Any(o => o.HasState(OrderStates.Valid) || o.HasState(ReclamationStates.Valid) || o.HasState(ReclamationStates.Handled) || o.Users.Value.Any(u => u.Id.Equals(_workContext.CurrentUser.Id)))).Select(p => new MapPlaceModel() { Place = p.ToModel() }));
             }
             else if (_workContext.CurrentUser.HasRoles(UserRoles.Customer))
             {
@@ -91,20 +91,24 @@ namespace CRMM.Controllers.API
             // Add workers
             if (_workContext.CurrentUser.HasRoles(UserRoles.Admin, UserRoles.Supplier))
             {
-                model.Workers = place.Users.Value.Where(u => u.HasRoles(UserRoles.Worker)).Select(u => u.ToModel()).ToList();
+                model.Workers = place.Orders.Value.SelectMany(o => o.Users.Value.Where(u => u.HasRoles(UserRoles.Worker)).Select(u => u.ToModel())).ToList();
             }
 
             if (_workContext.CurrentUser.HasRoles(UserRoles.Worker))
             {
                 // Add only valid orders
-                model.Orders = place.Orders.Value.Where(o => o.HasState(OrderStates.Valid) || o.Users.Value.Any(u => u.Id.Equals(_workContext.CurrentUser.Id))).Select(o => o.ToModel()).ToList();
+                model.Orders = place.Orders.Value.Where(o => o.HasState(OrderStates.Valid) || o.HasState(ReclamationStates.Valid) || o.HasState(ReclamationStates.Handled) || o.Users.Value.Any(u => u.Id.Equals(_workContext.CurrentUser.Id))).Select(o => o.ToModel(_workContext.CurrentUser)).ToList();
+            }
+            else if (_workContext.CurrentUser.HasRoles(UserRoles.Customer))
+            {
+                // Add owned
+                model.Orders = place.Orders.Value.Where(o => o.Users.Value.Any(u => u.Id.Equals(_workContext.CurrentUser.Id))).Select(o => o.ToModel(_workContext.CurrentUser)).ToList();
             }
             else
             {
                 // Add all
-                model.Orders = place.Orders.Value.Select(o => o.ToModel()).ToList();
+                model.Orders = place.Orders.Value.Select(o => o.ToModel(_workContext.CurrentUser)).ToList();
             }
-
             return model;
         }
     }

@@ -23,7 +23,7 @@ namespace CRMM.Controllers.API
 
         // POST: api/User
         [HttpPost("login")]
-        public UserModel Login([FromForm] LoginModel model)
+        public UserModel Login([FromForm] ApiLoginModel model)
         {
             var user = _userService.Login(model.Email, model.Password);
             if (user != null)

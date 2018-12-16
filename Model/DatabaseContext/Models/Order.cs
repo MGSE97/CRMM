@@ -67,6 +67,11 @@ namespace DatabaseContext.Models
                     state.Delete();
                 }
 
+                foreach (var userOrder in new UserOrder(Context) { OrderId = Id}.Find())
+                {
+                    userOrder.Delete();
+                }
+
                 base.Delete(this);
             }
 

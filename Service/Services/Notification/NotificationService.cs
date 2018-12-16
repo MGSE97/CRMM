@@ -39,9 +39,21 @@ namespace Services.Notification
                         orders.Select(u => new NotificationModel(
                             u.Id,
                             OrderStates.Validating,
-                            u.States.Value?.FirstOrDefault(s => s.Type.Equals(OrderStates.Validating))?.Description,
+                            u.States.Value?.FirstOrDefault(s => s.DeletedOnUtc == null && s.Type.Equals(OrderStates.Validating))?.Description,
                             "fas fa-box",
                             "info"
+                        )));
+
+                // Add validation pending reclamations
+                var reclamations = DatabaseContext.Models.Order.FindAll(_databaseService.Context)?.Where(p => p.HasState(ReclamationStates.Validating)).ToList();
+                if (reclamations != null && reclamations.Any())
+                    notifications.AddRange(
+                        reclamations.Select(u => new NotificationModel(
+                            u.Id,
+                            ReclamationStates.Validating,
+                            u.States.Value?.FirstOrDefault(s => s.DeletedOnUtc == null && s.Type.Equals(ReclamationStates.Validating))?.Description,
+                            "fas fa-recycle",
+                            "danger"
                         )));
             }
 

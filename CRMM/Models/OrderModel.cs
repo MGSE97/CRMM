@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Data.Mapping.Attributes;
 using DatabaseContext.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,12 +17,12 @@ namespace CRMM.Models
         [Display(Name = "Název")]
         public string Name { get; set; }
 
-        [Display(Name = "Popis")]
+        [Display(Name = "Zboží")]
         public string Description { get; set; }
 
         [Required]
         [MinLength(1)]
-        [Display(Name = "Zboží")]
+        [Display(Name = "Typ")]
         public string Type { get; set; }
 
         [Required]
@@ -30,6 +31,11 @@ namespace CRMM.Models
         public SelectListItem[] Locations { get; set; }
 
         public bool Validating { get; set; }
+
+        public DateTime? CreatedOnUtc { get; set; }
+
+        public string State { get; set; }
+        public DateTime? StateCreatedOnUtc { get; set; }
 
         public string NextState { get; set; }
 
@@ -47,8 +53,9 @@ namespace CRMM.Models
     }
     public static class OrderExtensions
     {
-        public static OrderModel ToModel(this Order order)
+        public static OrderModel ToModel(this Order order, User user = null)
         {
+            var state = OrderStates.GetState(order);
             return new OrderModel()
             {
                 Id = order.Id,
@@ -56,7 +63,10 @@ namespace CRMM.Models
                 Type = order.Type,
                 Description = order.Description,
                 Validating = order.HasState(OrderStates.Validating),
-                NextState = OrderStates.GetNextState(order)
+                State = state,
+                StateCreatedOnUtc = state != null ? order.GetState(state)?.CreatedOnUtc : null,
+                NextState = OrderStates.GetNextState(order, user),
+                CreatedOnUtc = order.GetState(OrderStates.DropOf)?.CreatedOnUtc
             };
         }
     }

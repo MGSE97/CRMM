@@ -1,16 +1,21 @@
 ﻿using DatabaseContext.Models;
+using Newtonsoft.Json;
 using Services;
 
 namespace CRMM.Models
 {
     public class UserModel
     {
+        [JsonProperty("id")]
         public ulong Id { get; set; }
 
+        [JsonProperty("name")]
         public string Name { get; set; }
 
+        [JsonProperty("email")]
         public string Email { get; set; }
 
+        [JsonProperty("validating")]
         public bool Validating { get; set; }
     }
 

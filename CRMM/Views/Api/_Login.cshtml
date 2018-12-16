@@ -1,0 +1,32 @@
+﻿@using System.Web
+@using Newtonsoft.Json
+@model ApiLoginModel
+
+<script type="text/javascript">
+    var currentUser = JSON.parse('@Html.Raw(HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(WorkContext.CurrentUser?.ToModel())))');
+</script>
+<div class="position-fixed embed-responsive h-100 w-100 @Html.Raw(WorkContext.CurrentUser?.Id > 0 ? "pagehide": "")" id="loginPage">
+    <div class="embed-responsive-item row text-white">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 offset-sm-0 offset-md-3 offset-lg-4 offset-xl-4 p-5">
+            <h3>Přihlášení</h3>
+            @using (var form = Html.BeginForm())
+            {
+                <fieldset>
+                    @Html.LabelFor(m => m.Email)
+                    <div class="form-group">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", autofocus = String.Empty })
+                    </div>
+                    @Html.LabelFor(m => m.Password)
+                    <div class="form-group">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    </div>
+                    <button type="submit" class="btn btn-success">Přihlásit</button>
+                </fieldset>
+            }
+            <hr style="background-color: white" />
+            <footer class="text-center">
+                <p>&copy; 2018 - CRMM</p>
+            </footer>
+        </div>
+    </div>
+</div>

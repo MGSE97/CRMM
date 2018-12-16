@@ -28,7 +28,17 @@ namespace CRMM.Controllers
 
         public IActionResult List()
         {
-            return View(_workContext.CurrentUser.Orders.Value);
+            var orders = new List<Order>();
+            if (_workContext.CurrentUser.HasRoles(UserRoles.Admin, UserRoles.Supplier))
+            {
+                orders.AddRange(Order.FindAll(_databaseService.Context));
+            }
+            else if (_workContext.CurrentUser.HasRoles(UserRoles.Worker))
+            {
+                orders.AddRange(Order.FindAll(_databaseService.Context).Where(o => o.HasState(OrderStates.Valid, ReclamationStates.Valid) || o.Users.Value.Any(u => u.Id.Equals(_workContext.CurrentUser.Id))));
+            }
+            orders.AddRange(_workContext.CurrentUser.Orders.Value);
+            return View(orders.Distinct().ToList());
         }
 
 
@@ -106,11 +116,30 @@ namespace CRMM.Controllers
                 var order = new Order(_databaseService.Context) { Id = id }.Find().FirstOrDefault();
 
                 if (order != null)
-                    foreach (var state in order.States.Value.Where(s => s.Type.Equals(OrderStates.Validating) && s.DeletedOnUtc == null))
+                {
+                    if (order.HasState(ReclamationStates.Validating))
                     {
-                        state.DeletedOnUtc = DateTime.UtcNow;
-                        state.Save();
+                        var next = ReclamationStates.GetNextState(order) ?? ReclamationStates.Valid;
+                        foreach (var state in order.States.Value.Where(s => s.Type.Equals(ReclamationStates.Validating) && s.DeletedOnUtc == null))
+                        {
+                            state.DeletedOnUtc = DateTime.UtcNow;
+                            state.Save();
+                        }
+
+                        order.SetState(order.GetDropOfId(), next);
                     }
+                    else
+                    {
+                        var next = OrderStates.GetNextState(order) ?? OrderStates.Valid;
+                        foreach (var state in order.States.Value.Where(s => s.Type.Equals(OrderStates.Validating) && s.DeletedOnUtc == null))
+                        {
+                            state.DeletedOnUtc = DateTime.UtcNow;
+                            state.Save();
+                        }
+
+                        order.SetState(order.GetDropOfId(), next);
+                    }
+                }
             }
 
             return RedirectToAction("Index", "Home");

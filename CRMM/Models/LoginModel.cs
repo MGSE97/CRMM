@@ -15,4 +15,12 @@ namespace CRMM.Models
         [Display(Name = "Heslo")]
         public string Password { get; set; }
     }
+    public class ApiLoginModel
+    {
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Display(Name = "Heslo")]
+        public string Password { get; set; }
+    }
 }

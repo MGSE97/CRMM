@@ -1,61 +1,8 @@
 ﻿@{
     ViewBag.Title = "CRMM";
-    Layout = "";
+    Layout = "_LayoutApi";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/fontawesome/css/all.css" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
-    </environment>
-
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
-
-    <script src='https://api.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
-    <script type="text/javascript">
-        mapboxgl.accessToken = 'pk.eyJ1IjoibWdzZSIsImEiOiJjanBsdHBmeW8wNXQ3NDJxdWdrcXNrcTZ3In0.QOliOLGt5uNCEZAfxirvOQ';
-    </script>
-</head>
-<body class="p-0 m-0 bg-dark">
-    <div class="position-fixed embed-responsive h-100 w-100">
-        <div id='map' class="embed-responsive-item"></div>
-    </div>
-
-    <script src="~/lib/popper/popper.min.js"></script>
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/cordova.js" asp-append-version="true"></script>
-        <script src="~/lib/fontawesome/js/all.js"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="~/js/cordova.min.js" asp-append-version="true"></script>
-        <script src="~/lib/fontawesome/js/all.min.js"></script>
-    </environment>
-
-    <script type="text/javascript">
-        $(function() {
-            $('[data-toggle="tooltip"]').tooltip();
-            cordovaInit('map', {
-                login: '@Url.Action("Login", "User")',
-                logout: '@Url.Action("Logout", "User")',
-                map: '@Url.Action("GetMap","Map")',
-                location: '@Url.Action("GetLocation","Map", new {id = "_id_"})',
-                order: '@Url.Action("SetGet","PlaceOrder", new {placeId = "_placeid_", id = "_id_", state = "_state_"})'
-            });
-        });
-    </script>
-</body>
-</html>
+@Html.PartialAsync("_Map").Result
+@Html.PartialAsync("_Login").Result
+@Html.PartialAsync("_Place").Result

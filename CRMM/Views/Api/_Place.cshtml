@@ -1,0 +1,44 @@
+﻿<div class="position-fixed embed-responsive h-100 w-100 bg-white pagehide" id="placePage">
+    <div class="embed-responsive-item row m-0 p-0">
+        <div class="col-12 p-2">
+            <a class="btn btn-lg float-right" onclick="placeClose()"><i class="fas fa-times"></i></a>
+            <h5 class="m-0" id="customerName"></h5>
+            <h6 class="m-0" id="placeName"></h6>
+            <small id="placeType"></small><br/>
+            <span id="placeAddress"></span>
+        </div>
+        <div class="col-12 p-2" id="placeWorkersWrapper" style="overflow-y: auto">
+            <div class="card m-2">
+                <div class="card-header">
+                    Zaměstnanci v lokaci
+                </div>
+                <ul class="list-group list-group-flush" id="placeWorkers">
+                </ul>
+            </div>
+        </div>
+        <div class="col-12 p-2 h-75" id="placeOrders" style="overflow-y: auto">
+        </div>
+        <div class="col-12 p-0 m-0">
+            <div class="pagehide" id="placeOrderTemplate">
+                <div class="card m-2">
+                    <div class="card-header">
+                        <span class="date float-right"></span>
+                        <h6 class="name"></h6>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="nextstate-btn btn btn-primary float-right"><i class="fas fa-clipboard-check"></i> <span class="nextstate"></span></button>
+                        <span class="description"></span><br /><br />
+                        <small><span class="statedate float-right"></span><span class="state"></span></small>
+                    </div>
+                </div>
+            </div>
+            <div class="pagehide" id="placeWorkerTemplate">
+                <li class="list-group-item"><span class="name"></span></li>
+            </div>
+                <hr/>
+                <footer class="text-center">
+                    <p>&copy; 2018 - CRMM</p>
+                </footer>
+            </div>
+        </div>
+</div>

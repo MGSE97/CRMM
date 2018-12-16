@@ -1,0 +1,4 @@
+﻿<div class="position-fixed embed-responsive h-100 w-100 @Html.Raw(WorkContext.CurrentUser?.Id > 0 ? "" : "pagehide")" id="mapPage">
+    <div id='map' class="embed-responsive-item"></div>
+    <button id="logout" type="button" class="btn p-2 m-2" style="background-color: white;position: absolute; top: 0; left: 0;"><i class="fas fa-sign-out-alt"></i></button>
+</div>
