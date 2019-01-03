@@ -16,6 +16,7 @@ using Services.Database;
 using Services.Notification;
 using Services.Order;
 using Services.Place;
+using Services.Statistics;
 using Services.User;
 using Services.WorkContext;
 
@@ -72,6 +73,7 @@ namespace CRMM
             services.AddScoped<IPlaceService, PlaceService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IRequestLogService, RequestLogService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,6 +93,8 @@ namespace CRMM
             app.UseStaticFiles(new StaticFileOptions(){ServeUnknownFileTypes = true});
             app.UseCookiePolicy();
             app.UseSession();
+
+            app.UseMiddleware<RequestLogMiddleware>();
 
             app.UseMvc(routes =>
             {

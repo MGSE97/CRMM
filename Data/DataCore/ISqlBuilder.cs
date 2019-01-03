@@ -8,5 +8,7 @@ namespace DataCore
         string Update(string table, IList<string> columns, IList<string> keys);
         string Delete(string table, IList<string> keys);
         string Search(string table, IList<string> columns = null, IList<string> keys = null);
+
+        string SearchBetween(string table, IList<string> columns, IList<string> keys = null);
     }
 }

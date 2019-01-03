@@ -20,10 +20,18 @@ namespace Data.Mapping
                 {
                     if (reader.GetName(i).Equals(propertyInfo.Name) && propertyInfo.CanWrite(accessProtection))
                     {
-                        object value = reader[i];
+                        var value = reader[i];
                         if (value == DBNull.Value)
-                            value = null;
-                        propertyInfo.SetValue(model, value);
+                            value = propertyInfo.PropertyType.GetDefault();
+                        else
+                        {
+                            //https://stackoverflow.com/questions/13270183/type-conversion-issue-when-setting-property-through-reflection
+                            var type = (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                                ? Nullable.GetUnderlyingType(propertyInfo.PropertyType)
+                                : propertyInfo.PropertyType;
+                            value = Convert.ChangeType(value, type);
+                        }
+                        propertyInfo.SetValue(model, value, null);
                     }
                 }
             }

@@ -64,7 +64,19 @@ namespace Model.Manager
                 var sql = Connector.SqlBuilder.Search(model.GetTableName(), columns.Keys.ToList(), both.Keys.ToList());
                 return Connector.ExecuteSqlReader<TModel>(sql, both).ToList();
             }
-            
+        }
+
+        public IList<TModel> SearchBetween<TModel>(TModel modelA, TModel modelB) where TModel : new()
+        {
+            // use Model
+            var both = modelA.ToDictionary(AccessProtection.Private, MapMode.Both | MapMode.NotNull);
+            var columns = modelA.ToDictionary(AccessProtection.Private);
+            var sql = Connector.SqlBuilder.SearchBetween(modelA.GetTableName(), columns.Keys.ToList(), both.Keys.ToList());
+            foreach (var pair in modelB.ToDictionary(AccessProtection.Private, MapMode.Both | MapMode.NotNull))
+            {
+                both.Add(new KeyValuePair<string, object>($"2_{pair.Key}", pair.Value));
+            }
+            return Connector.ExecuteSqlReader<TModel>(sql, both).ToList();
         }
     }
 }

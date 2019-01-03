@@ -34,34 +34,46 @@ namespace CRMM.Utils
             return result;
         }
 
-        public static XmlDocument Serialize<TData>(this TData data)
+        public static XmlDocument Serialize<TData>(this TData data, XmlDocument doc = null, XmlNode element = null)
         {
-            var doc = new XmlDocument();
-            var dec = doc.CreateXmlDeclaration("1.0", "utf-8", "yes");
-            var root = doc.CreateElement(XmlConvert.EncodeName(data.GetType().Name));
-            doc.AppendChild(root);
-            doc.InsertBefore(dec, root);
+            if (doc == null)
+            {
+                doc = new XmlDocument();
+                var dec = doc.CreateXmlDeclaration("1.0", "utf-8", "yes");
+                var root = doc.CreateElement(XmlConvert.EncodeName(data.GetType().Name));
+                doc.AppendChild(root);
+                doc.InsertBefore(dec, root);
+            }
+
+            if (element == null)
+                element = doc.DocumentElement;
+
             if (data is IEnumerable enumerable)
             {
                 foreach (var item in enumerable)
                 {
                     var parent = doc.CreateElement(XmlConvert.EncodeName(item.GetType().Name));
-                    foreach (var propertyInfo in item.GetType().GetProperties())
+                    /*foreach (var propertyInfo in item.GetType().GetProperties())
                     {
                         var el = doc.CreateElement(propertyInfo.Name);
                         el.InnerText = propertyInfo.GetValue(item).ToString();
                         parent.AppendChild(el);
-                    }
+                    }*/
 
-                    root.AppendChild(parent);
+                    item.Serialize(doc, parent);
+
+                    element.AppendChild(parent);
                 }
             }
             else
                 foreach (var propertyInfo in data.GetType().GetProperties())
                 {
                     var el = doc.CreateElement(propertyInfo.Name);
-                    el.InnerText = propertyInfo.GetValue(data).ToString();
-                    root.AppendChild(el);
+                    if (typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType) && !typeof(string).IsAssignableFrom(propertyInfo.PropertyType))
+                        propertyInfo.GetValue(data).Serialize(doc, el);
+                    else
+                        el.InnerText = propertyInfo.GetValue(data).ToString();
+                    element.AppendChild(el);
                 }
             return doc;
         }

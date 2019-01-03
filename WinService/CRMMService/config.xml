@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <User>
+    <Email>a007n007@gmail.com</Email>
+    <Pass>mgs</Pass>
+  </User>
+  <Service>
+    <Url>https://localhost:44308/api/service/fetch</Url>
+    <File>data.xml</File>
+    <Graph>graph.png</Graph>
+  </Service>
+</Configuration>
