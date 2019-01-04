@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Data.Linq;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -23,6 +24,8 @@ namespace CRMM.Service
         public SmtpClient SmtpClient { get; set; }
 
         public string From { get; set; }
+
+        private Object _lockG = new Object();
 
         public Core()
         {
@@ -147,7 +150,11 @@ namespace CRMM.Service
                 }
 
                 graphics.Save();
-                graph.Save(file);
+                lock (_lockG)
+                using (var save = new Bitmap(graph))
+                {
+                    save.Save(file, ImageFormat.Png);
+                }
             }
         }
 
@@ -169,18 +176,21 @@ namespace CRMM.Service
         {
             var now = DateTime.Now;
             var start = now.AddMinutes(-minutes);
-            var mail = new MailMessage();
-            mail.From = new MailAddress(From);
-            mail.To.Add(new MailAddress(email));
-            mail.Subject = $"CRMM Report {start} - {now}";
-            mail.Body = $"Users & Request activity on system CRMM from {start} to {now}.";
-
-            foreach (var attachment in attachments)
+            using (var mail = new MailMessage())
             {
-                mail.Attachments.Add(new Attachment(attachment));
-            }
+                mail.From = new MailAddress(From);
+                mail.To.Add(new MailAddress(email));
+                mail.Subject = $"CRMM Report {start} - {now}";
+                mail.Body = $"Users & Request activity on system CRMM from {start} to {now}.";
 
-            await SmtpClient.SendMailAsync(mail);
+                foreach (var attachment in attachments)
+                {
+                    mail.Attachments.Add(new Attachment(attachment));
+                }
+
+                await SmtpClient.SendMailAsync(mail);
+                mail.Attachments.Dispose();
+            }
         }
     }
 }

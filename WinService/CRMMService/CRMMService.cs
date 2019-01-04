@@ -44,7 +44,7 @@ namespace CRMMService
                     Trace.WriteLine(ex.ToString());
                 }
             };
-            EmailUpdate = new Timer(5*60*1000);
+            EmailUpdate = new Timer(1*60*1000);
             EmailUpdate.Elapsed += async (sender, args) =>
             {
                 var success = false;
@@ -52,12 +52,9 @@ namespace CRMMService
                 {
                     try
                     {
-                        var result = await Core.FetchAsync(Core.Configuration.Service.Url,
-                            $"mailtemp_{Core.Configuration.Service.File}", 5, null, null);
-                        Core.CreateGraph($"mailtemp_{Core.Configuration.Service.Graph}",
-                            result.Graphs.FirstOrDefault());
-                        await Core.SendEmailAsync(Core.Configuration.User.Email, 5,
-                            $"mailtemp_{Core.Configuration.Service.Graph}");
+                        var result = await Core.FetchAsync(Core.Configuration.Service.Url, $"mailtemp_{Core.Configuration.Service.File}", 1, null, null);
+                        Core.CreateGraph($"mailtemp_{Core.Configuration.Service.Graph}", result.Graphs.FirstOrDefault());
+                        await Core.SendEmailAsync(Core.Configuration.User.Email, 1, $"mailtemp_{Core.Configuration.Service.Graph}");
                         success = true;
                         Trace.WriteLine("Send reports email");
                     }
