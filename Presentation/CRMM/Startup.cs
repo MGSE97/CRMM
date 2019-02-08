@@ -54,8 +54,9 @@ namespace CRMM
             });
             services.AddMvc(options =>
                 {
-                    options.Filters.Add(new ApiControllerHeadersFilter(("Access-Control-Allow-Origin", "*"),
-                                                                       ("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE") ));
+                    options.Filters.Add(new ApiControllerHeadersFilter(("Access-Control-Allow-Origin", c => c.Request.Headers["Origin"]),
+                                                                       ("Access-Control-Allow-Credentials", c => "true"),
+                                                                       ("Access-Control-Allow-Methods", c => "POST, GET, OPTIONS, DELETE") ));
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddSessionStateTempDataProvider();
