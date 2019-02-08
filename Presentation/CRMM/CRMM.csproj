@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\MySql\MySql.csproj" />
-    <ProjectReference Include="..\Service\Services\Services.csproj" />
+    <ProjectReference Include="..\..\Data\MySql\MySql.csproj" />
+    <ProjectReference Include="..\..\Service\Services\Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

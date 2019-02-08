@@ -30,8 +30,8 @@ namespace CRMM.Service
         public Core()
         {
             SmtpClient = new SmtpClient("smtp.gmail.com", 587);
-            From = "a007n007@gmail.com";
-            SmtpClient.Credentials = new NetworkCredential(From, "01822fd971d");
+            From = "**Email**@gmail.com";
+            SmtpClient.Credentials = new NetworkCredential(From, "**Email Password**");
             SmtpClient.EnableSsl = true;
         }
         
