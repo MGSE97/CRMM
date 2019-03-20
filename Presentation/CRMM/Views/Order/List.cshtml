@@ -1,0 +1,19 @@
+﻿@using DatabaseContext.Models
+@using ModelCore
+@model System.Collections.Generic.IList<DatabaseContext.Models.Order>
+
+@{
+    ViewBag.Title = "Objednávky";
+    Layout = "_Layout";
+    ViewData["Path"] = new Dictionary<string, string>() {
+        { "CRMM", Url.Action("Index", "Home") },
+        { "Objednávky", "" }
+    };
+}
+
+@Html.PartialAsync("_Table", new TableModel("Objednávky", typeof(Order), Model, new TableOptions(
+    Url.Action("Create"),
+    Url.Action("Edit", new { id = "_id_" }),
+    Url.Action("Delete", new { id = "_id_" }),
+    Url.Action("Export", new { type = "_type_" })
+))).Result

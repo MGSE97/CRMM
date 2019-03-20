@@ -46,5 +46,13 @@ namespace MySql
             
             return $"SELECT {string.Join(",", columns)} FROM `{table}`";
         }
+
+        public string SearchBetween(string table, IList<string> columns, IList<string> keys = null)
+        {
+            if (keys != null && keys.Count > 0)
+                return $"SELECT {string.Join(",", columns)} FROM `{table}` WHERE {string.Join(" AND ", keys.Select(k => $"{k} BETWEEN @p_{k} AND @p_2_{k}"))}";
+
+            return $"SELECT {string.Join(",", columns)} FROM `{table}`";
+        }
     }
 }

@@ -10,11 +10,12 @@
         app.receivedEvent('deviceready');
 
         // Here, we redirect to the web site.
-        var targetUrl = "https://localhost:44308/api/";
+        var targetUrl = "http://35.196.199.23/api/";
         var bkpLink = document.getElementById("bkpLink");
         bkpLink.setAttribute("href", targetUrl);
         bkpLink.text = targetUrl;
-        window.location.replace(targetUrl);
+        cordova.InAppBrowser.open(targetUrl, '_self', 'location=no,hardwareback=no,hidenavigationbuttons=yes,hideurlbar=yes').show();
+        //window.location.replace(targetUrl);
     },
     // Note: This code is taken from the Cordova CLI template.
     receivedEvent: function (id) {

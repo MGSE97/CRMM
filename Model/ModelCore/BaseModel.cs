@@ -65,5 +65,13 @@ namespace ModelCore
                 f.SetContext(context);
             return found;
         }
+
+        public virtual IList<TModel> FindBetween<TModel>(TModel modelA, TModel modelB) where TModel : BaseModel, new()
+        {
+            var found = Context.ModelManager.SearchBetween(modelA, modelB);
+            foreach (var f in found)
+                f.SetContext(Context);
+            return found;
+        }
     }
 }
