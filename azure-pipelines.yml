@@ -5,6 +5,8 @@
 
 trigger:
 - master
+- AT.NET
+- VIS
 
 pool:
   vmImage: 'Ubuntu-16.04'
