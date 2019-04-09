@@ -16,6 +16,8 @@ variables:
 steps:
 - script: dotnet restore
   displayName: 'dotnet restore'
+- script: bower install
+  displayName: 'bower restore'
 - script: dotnet build --configuration $(buildConfigurationDebug)
   displayName: 'dotnet build $(buildConfigurationDebug)'
 - script: dotnet build --configuration $(buildConfigurationRelease)
