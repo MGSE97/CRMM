@@ -36,7 +36,7 @@ namespace CRMM
             ServiceDirectory = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "..", "WinService", "CRMMService", "bin", "Debug"));
             Plugins = new List<IPlugin>();
             UpdateTimer = new System.Timers.Timer(1000);
-            UpdateTimer.Elapsed += (s, e) => Update();
+            UpdateTimer.Elapsed += (s, e) => DataUpdate();
 
             LoadPlugins();
             StartPlugins();
@@ -55,7 +55,7 @@ namespace CRMM
             }
         }
 
-        private void Update()
+        private void DataUpdate()
         {
             try
             {

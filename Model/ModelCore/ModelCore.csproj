@@ -5,14 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\ModelManager\ModelManager.csproj" />
-    <ProjectReference Include="..\..\Mapping\DataMapper\DataMapper.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\Domain\ModelManager\ModelManager.csproj" />
+    <ProjectReference Include="..\..\Mapping\DataMapper\DataMapper.csproj" />
   </ItemGroup>
 
 </Project>

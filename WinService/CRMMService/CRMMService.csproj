@@ -49,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>3C03FB678FBCFCDA0F6EB3D1251C472CB503F9C3</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>42A51086C64F664C44EF0B98228995D820252849</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>CRMMService_TemporaryKey.pfx</ManifestKeyFile>
@@ -59,6 +59,12 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>CRMMService_TemporaryKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -92,6 +98,8 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="CRMMService_TemporaryKey.pfx" />
+    <None Include="CRMMService_TemporaryKey.pfx.snk" />
+    <None Include="CRMMService_TemporaryKey.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CRMMServiceCore\CRMMServiceCore.csproj">

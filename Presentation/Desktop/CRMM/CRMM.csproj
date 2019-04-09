@@ -94,9 +94,6 @@
     <Content Include="Plugins\Notification\CRMMServiceInterface.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Plugins\Notification\CRMMServiceInterface.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Plugins\Notification\Microsoft.Win32.Primitives.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -106,14 +103,8 @@
     <Content Include="Plugins\Notification\NotificationPlugin.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Plugins\Notification\NotificationPlugin.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Plugins\Notification\cs\NotificationPlugin.resources.dll" />
     <Content Include="Plugins\Notification\PluginInterface.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Plugins\Notification\PluginInterface.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\Notification\System.AppContext.dll">
@@ -401,9 +392,6 @@
     <Content Include="Plugins\RequestGraph\CRMMServiceInterface.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Plugins\RequestGraph\CRMMServiceInterface.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Plugins\RequestGraph\Microsoft.Win32.Primitives.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -413,13 +401,7 @@
     <Content Include="Plugins\RequestGraph\PluginInterface.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Plugins\RequestGraph\PluginInterface.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Plugins\RequestGraph\RequestGraphPlugin.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Plugins\RequestGraph\RequestGraphPlugin.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\RequestGraph\System.AppContext.dll">
