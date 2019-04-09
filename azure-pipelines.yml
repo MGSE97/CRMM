@@ -20,7 +20,7 @@ steps:
   displayName: 'bower install'
 - script: bower install
   displayName: 'bower restore'
-  workingDirectory: $(Agent.BuildDirectory)\CRMM\Presentation\Cordova
+  workingDirectory: $(Build.SourcesDirectory)\Presentation\Cordova
 - script: dotnet build --configuration $(buildConfigurationDebug)
   displayName: 'dotnet build $(buildConfigurationDebug)'
 - script: dotnet build --configuration $(buildConfigurationRelease)
