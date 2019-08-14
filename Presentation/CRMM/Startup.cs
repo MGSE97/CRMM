@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRMM.Utils;
 using DatabaseContext.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Model.Manager;
 using MySql;
 using Services.Database;
@@ -50,7 +52,12 @@ namespace CRMM
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.IsEssential = true;
             });
-            services.AddMvc()
+            services.AddMvc(options =>
+                {
+                    options.Filters.Add(new ApiControllerHeadersFilter(("Access-Control-Allow-Origin", c => c.Request.Headers["Origin"]),
+                                                                       ("Access-Control-Allow-Credentials", c => "true"),
+                                                                       ("Access-Control-Allow-Methods", c => "POST, GET, OPTIONS, DELETE") ));
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddSessionStateTempDataProvider();
             services.AddHttpContextAccessor();
