@@ -2,6 +2,7 @@
 using ModelCore;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using Data.Mapping.Attributes;
 
 namespace DatabaseContext.Models
@@ -17,6 +18,15 @@ namespace DatabaseContext.Models
 
         public DateTime CreatedOnUtc { get; set; }
 
+        #region Additional info
+
+        public string IpAddress { get; set; }
+
+        public string UserAgent { get; set; }
+
+        public string Request { get; set; }
+
+        #endregion
 
         public RequestLog() : this(null)
         {

@@ -19,6 +19,12 @@ namespace CRMM
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseKestrel(options =>
+                {
+                    options.Limits.MaxConcurrentConnections = 50;
+                    options.Limits.MaxConcurrentUpgradedConnections = 50;
+                    options.Limits.MaxRequestBodySize = 10 * 1024;
+                });
     }
 }
